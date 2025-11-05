@@ -1,125 +1,98 @@
-<div class="wrapper" wtpinactiveonedit="">
-    <div class="mixed-block">
-        <div class="grid-6">
-            <div class="row animated row3 fadeInUp">
-                <div class="grid-12">
+<?php
+/**
+ * Template for displaying tours by location shortcode
+ *
+ * Variables:
+ * @var WP_Query $tour_query
+ */
+$count = 0;
+?>
+<div class="cw-tour-fe-wrepper">
+	<div class="mixed-block cw-fe-holder">
 
-                    <a href="/tour/tour-5405">
+		<?php
+		// Split posts into two columns of 3 items each (like your HTML)
+		$left_col  = array();
+		$right_col = array();
 
-                        <div class="card leisure-left">
-                            <div class="zoom" style="background-image: url('/dynamic-images/2000-2999/2076/2076_r=270_w=1180_h=385_c=[0,1671,3022,985].jpg?ni=%2Fimages%2Fno-image.png'); background-size: cover; background-position: 53.66% 50.08% "></div>
-                            <div class="card-content content-bl">
-                                <h4>The Road to AlUla </h4>
+		while ( $tour_query->have_posts() ) :
+			$tour_query->the_post();
 
-                                <p><i class="icon-cal"></i>7 nights <i class="icon-location"></i> Jeddah - Medinah - Ula - Tabuk</p>
-                            </div>
-                        </div>
+			$count++;
+			$tour_id   = get_the_ID();
+			$title     = get_the_title();
+			$permalink = get_permalink();
+			$image_url = get_the_post_thumbnail_url( $tour_id, 'large' );
 
-                    </a>
+			$nights   = get_post_meta( $tour_id, 'nights', true );
+			$places   = get_post_meta( $tour_id, 'places_left', true );
+            
+			$locations = wp_get_post_terms( $tour_id, 'location', array( 'fields' => 'names' ) );
+			$location  = ! empty( $locations ) ? implode( ' - ', $locations ) : '';
 
-                </div>
-                <div class="grid-6">
+			// Alternate card style classes
+			$card_classes = array( 'card' );
+			if ( $count === 1 ) {
+				$card_classes[] = 'leisure-left';
+			} elseif ( $count === 3 || $count === 4 ) {
+				$card_classes[] = 'active-left';
+			} elseif ( $count === 5 ) {
+				$card_classes[] = 'highlight-left';
+			} else {
+				$card_classes[] = 'culture-left';
+			}
 
-                    <a href="/tour/the-heritage-route---riyadh-to-jeddah-(classic)">
+			ob_start();
+			?>
+			<div class="grid-<?php echo ( $count === 1 || $count === 6 ) ? '12' : '6'; ?>">
+				<a href="<?php echo esc_url( $permalink ); ?>">
+					<div class="<?php echo esc_attr( implode( ' ', $card_classes ) ); ?>">
+						<div class="cw-bg-img zoom"
+							style="background-image: url('<?php echo esc_url( $image_url ); ?>'); background-size: cover; background-position: 50% 50%;">
+							
+							<div class="card-content content-bl">
+								<?php if ( ! empty( $places ) ) : ?>
+									<p class="content-tl">
+										<img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/group.png' ); ?>" alt="">
+										<?php echo esc_html( $places ) . ' ' . _x( 'places left', 'tour spots left', 'promptly-ai-assistance' ); ?>
+									</p>
+								<?php endif; ?>
 
-                        <div class="card leisure-left">
-                            <div class="zoom" style="background-image: url('/dynamic-images/2000-2999/2088/2088_w=1180_h=385_c=[0,860,5064,1652].jpg?ni=%2Fimages%2Fno-image.png'); background-size: cover; background-position: 50% 50% "></div>
-                            <div class="card-content content-bl">
-                                <p class="content-tl">
+								<h4><?php echo esc_html( $title ); ?></h4>
 
-                                    <i class="icon-traveller"></i> 12&nbsp;places left
-                                </p>
-                                <h4>The Heritage Route - Riyadh to Jeddah </h4>
+								<p>
+									<img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/calendar-silhouette.png' ); ?>" alt="">
+									<?php echo esc_html( $nights ) . ' ' . _x( 'nights', 'tour duration', 'promptly-ai-assistance' ); ?>
+									<img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/web.png' ); ?>" alt="">
+									<?php echo esc_html( $location ); ?>
+								</p>
+							</div>
+						</div>
+					</div>
+				</a>
+			</div>
+			<?php
+			$item_html = ob_get_clean();
 
-                                <p><i class="icon-cal"></i>9 nights <i class="icon-location"></i> Riyadh - Buraidah - Hail - A l Ula - Madinah - Jeddah</p>
-                            </div>
-                        </div>
+			if ( $count <= 3 ) {
+				$left_col[] = $item_html;
+			} else {
+				$right_col[] = $item_html;
+			}
+		endwhile;
+		wp_reset_postdata();
+		?>
 
-                    </a>
+		<div class="grid-6">
+			<div class="cw-row animated row3 fadeInUp">
+				<?php echo implode( "\n", $left_col ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			</div>
+		</div>
 
-                </div>
-                <div class="grid-6">
-
-                    <a href="/tour/saudi-discovery">
-
-                        <div class="card active-left">
-                            <div class="zoom" style="background-image: url('/dynamic-images/2000-2999/2081/2081_r=270_w=1180_h=385_c=[0,737,3024,986].jpg?ni=%2Fimages%2Fno-image.png'); background-size: cover; background-position: 50% 50.05% "></div>
-                            <div class="card-content content-bl">
-                                <p class="content-tl">
-
-                                    <i class="icon-traveller"></i> 9&nbsp;places left
-                                </p>
-                                <h4>Saudi Discovery</h4>
-
-                                <p><i class="icon-cal"></i>9 nights <i class="icon-location"></i> Riyadh - Jeddah - Tabuk - Al Ula</p>
-                            </div>
-                        </div>
-
-                    </a>
-
-                </div>
-            </div>
-        </div>
-        <div class="grid-6">
-            <div class="row animated row4 fadeInUp">
-                <div class="grid-6">
-
-                    <a href="/tour/saudi-discovery">
-
-                        <div class="card active-left">
-                            <div class="zoom" style="background-image: url('/dynamic-images/2000-2999/2081/2081_r=270_w=1180_h=385_c=[0,1053,3024,986].jpg?ni=%2Fimages%2Fno-image.png'); background-size: cover; background-position: 50% 50.05% "></div>
-                            <div class="card-content content-bl">
-                                <p class="content-tl">
-
-                                    <i class="icon-traveller"></i> 9&nbsp;places left
-                                </p>
-                                <h4>Spirit of Saudia Arabia (Draft)</h4>
-
-                                <p><i class="icon-cal"></i>7 nights <i class="icon-location"></i> Riyadh - Jeddah - Tabuk - Al Ula</p>
-                            </div>
-                        </div>
-
-                    </a>
-
-                </div>
-                <div class="grid-6">
-
-                    <a href="/tour/the-road-to-al-ula---jeddah-to-ula">
-
-                        <div class="card highlight-left">
-                            <div class="zoom" style="background-image: url('/dynamic-images/1000-1999/1554/1554_w=1180_h=385_c=[0,227,1920,626].jpg?ni=%2Fimages%2Fno-image.png'); background-size: cover; background-position: 50% 50% "></div>
-                            <div class="card-content content-bl">
-                                <h4>Jeddah to Jeddah </h4>
-
-                                <p><i class="icon-cal"></i> nights <i class="icon-location"></i> Jeddah - Madinah - Yanbu - AlUla</p>
-                            </div>
-                        </div>
-
-                    </a>
-
-                </div>
-                <div class="grid-12">
-
-                    <a href="/tour/saudi-main-cities">
-
-                        <div class="card culture-left">
-                            <div class="zoom" style="background-image: url('/dynamic-images/1000-1999/1724/1724_w=1180_h=385_c=[0,227,1920,626].jpg?ni=%2Fimages%2Fno-image.png'); background-size: cover; background-position: 50% 50% "></div>
-                            <div class="card-content content-bl">
-                                <p class="content-tl">
-
-                                    <i class="icon-traveller"></i> 9&nbsp;places left
-                                </p>
-                                <h4>Saudi Main Cities</h4>
-
-                                <p><i class="icon-cal"></i>10 nights <i class="icon-location"></i> Riyadh - Jeddah - Dammam</p>
-                            </div>
-                        </div>
-
-                    </a>
-
-                </div>
-            </div>
-        </div>
-    </div>
-
+		<div class="grid-6">
+			<div class="cw-row animated row4 fadeInUp">
+				<?php echo implode( "\n", $right_col ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			</div>
+		</div>
+	</div>
 </div>

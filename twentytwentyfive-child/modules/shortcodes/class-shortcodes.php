@@ -19,12 +19,17 @@ class Shortcodes
     public function hooks()
     {
         add_shortcode( 'tours_by_location', array( $this, 'render_tours_by_location_shortcode' ) );
+        add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_tours_list_styles' ) );
+    }
+    
+    function enqueue_tours_list_styles() {
+        wp_enqueue_style('shortcodes_style', get_stylesheet_directory_uri() . '/modules/shortcodes/css/shortcodes.css', [], rand(), 'all');
     }
 
     /**
      * Shortcode: Display Tours filtered by location with flexible view.
      *
-     * Usage: [tours_by_location location="riyadh" limit="6" view="slider"]
+     * Usage: [tours_by_location location="riyadh" limit="6" view="slider"], for home page, pass only limit 6 parameter
      *
      * @param array $atts Shortcode attributes.
      * @return string
